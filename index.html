@@ -61,14 +61,10 @@
                     blueBanLeader: [],
                     firstBanCount: 6,
                     secondBanCount: 4,
-                    redBanCount: 0,
-                    blueBanCount: 0,
                     redPickLeader: [],
                     bluePickLeader: [],
                     firstPickCount: 4,
                     secondPickCount: 4,
-                    redPickCount: 0,
-                    bluePickCount: 0,
                     turn: "firstRedBan",
                 }
             },
@@ -98,23 +94,19 @@
                     }
                 },
                 submitButton() {
-                    console.log(this.turn);
-                    console.log(this.redBanCount);
-                    console.log(this.blueBanCount);
-
                     // 1st Ban
                     if (this.turn == "firstRedBan") {
-                        this.redBanLeader[this.redBanCount] = this.selectLeader.id;
-                        this.redBanCount++;
+                        this.redBanLeader.push(this.selectLeader.id);
                         this.turn = "firstBlueBan";
                         return;
                     } else if (this.turn == "firstBlueBan") {
-                        this.blueBanLeader[this.blueBanCount] = this.selectLeader.id;
-                        this.blueBanCount++;
+                        this.blueBanLeader.push(this.selectLeader.id);
                         this.turn = "firstRedBan";
 
                         // 1st Banの終了
-                        if (this.redBanCount + this.blueBanCount == this.firstBanCount) {
+                        let redBanCount = this.redBanLeader.length;
+                        let blueBanCount = this.blueBanLeader.length;
+                        if (redBanCount + blueBanCount == this.firstBanCount) {
                             this.turn = "firstRedPick";
                         }
                         return;
@@ -122,18 +114,20 @@
 
                     // 1st Pick
                     if (this.turn == "firstRedPick") {
-                        this.redPickLeader[this.redPickCount] = this.selectLeader.id;
-                        this.redPickCount++;
-                        if (this.redPickCount == 1) {
+                        this.redPickLeader.push(this.selectLeader.id);
+                        
+                        let redPickCount = this.redPickLeader.length;
+                        if (redPickCount == 1) {
                             this.turn = "firstBluePick";
-                        } else if (this.redPickCount == 2) {
+                        } else if (redPickCount == 2) {
                             this.turn = "secondBlueBan";
                         }
                         return;
                     } else if (this.turn == "firstBluePick") {
-                        this.bluePickLeader[this.bluePickCount] = this.selectLeader.id;
-                        this.bluePickCount++;
-                        if (this.bluePickCount == 2) {
+                        this.bluePickLeader.push(this.selectLeader.id);
+
+                        let bluePickCount = this.bluePickLeader.length;
+                        if (bluePickCount == 2) {
                             this.turn = "firstRedPick";
                         }
                         return;
@@ -141,17 +135,17 @@
 
                     // 2nd Ban
                     if (this.turn == "secondBlueBan") {
-                        this.blueBanLeader[this.blueBanCount] = this.selectLeader.id;
-                        this.blueBanCount++;
+                        this.blueBanLeader.push(this.selectLeader.id);
                         this.turn = "secondRedBan";
                         return;
                     } else if (this.turn == "secondRedBan") {
-                        this.redBanLeader[this.redBanCount] = this.selectLeader.id;
-                        this.redBanCount++;
+                        this.redBanLeader.push(this.selectLeader.id);
                         this.turn = "secondBlueBan";
 
                         // 2nd Banの終了
-                        if (this.redBanCount + this.blueBanCount == this.firstBanCount + this.secondBanCount) {
+                        let redBanCount = this.redBanLeader.length;
+                        let blueBanCount = this.blueBanLeader.length;
+                        if (redBanCount + blueBanCount == this.firstBanCount + this.secondBanCount) {
                             this.turn = "secondBluePick";
                         }
                         return;
@@ -159,18 +153,21 @@
 
                     // 2nd Pick
                     if (this.turn == "secondBluePick") {
-                        this.bluePickLeader[this.bluePickCount] = this.selectLeader.id;
-                        this.bluePickCount++;
-                        if (this.bluePickCount == 1 + this.firstPickCount / 2) {
+                        this.bluePickLeader.push(this.selectLeader.id);
+
+                        let bluePickCount = this.bluePickLeader.length;
+                        if (bluePickCount == 1 + this.firstPickCount / 2) {
                             this.turn = "secondRedPick";
-                        } else if (this.bluePickCount == 2 + this.firstPickCount / 2) {
+                        } else if (bluePickCount == 2 + this.firstPickCount / 2) {
                             this.turn = "finish";
                         }
                         return;
+
                     } else if (this.turn == "secondRedPick") {
-                        this.redPickLeader[this.redPickCount] = this.selectLeader.id;
-                        this.redPickCount++;
-                        if (this.redPickCount == 2 + this.firstPickCount / 2) {
+                        this.redPickLeader.push(this.selectLeader.id);
+
+                        let redPickCount = this.redPickLeader.length;
+                        if (redPickCount == 2 + this.firstPickCount / 2) {
                             this.turn = "secondBluePick";
                         }
                         return;
