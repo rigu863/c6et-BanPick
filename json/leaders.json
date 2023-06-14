@@ -1,0 +1,387 @@
+[
+    {
+        "id": "england_eleanor",
+        "name": "アキテーヌ女公アリエノール（イギリス）",
+        "civilization": "イギリス"
+    },
+    {
+        "id": "france_eleanor",
+        "name": "アキテーヌ女公アリエノール（フランス）",
+        "civilization": "フランス"
+    },
+    {
+        "id": "amanitore",
+        "name": "アマニトレ",
+        "civilization": "ヌビア"
+    },
+    {
+        "id": "alexander",
+        "name": "アレキサンドロス",
+        "civilization": "マケドニア"
+    },
+    {
+        "id": "ambiorix",
+        "name": "アンビオリクス",
+        "civilization": "ガリア"
+    },
+    {
+        "id": "victoria_steam",
+        "name": "ヴィクトリア（蒸気の時代）",
+        "civilization": "イギリス"
+    },
+    {
+        "id": "victoria",
+        "name": "ヴィクトリア（帝国の時代）",
+        "civilization": "イギリス"
+    },
+    {
+        "id": "wilfrid_laurier",
+        "name": "ウィルフリッド・ローリエ",
+        "civilization": "カナダ"
+    },
+    {
+        "id": "wilhelmina",
+        "name": "ウィルヘルミナ",
+        "civilization": "オランダ"
+    },
+    {
+        "id": "lincoln",
+        "name": "エイブラハム・リンカーン",
+        "civilization": "アメリカ"
+    },
+    {
+        "id": "elizabeth",
+        "name": "エリザベス1世",
+        "civilization": "イギリス"
+    },
+    {
+        "id": "catharine",
+        "name": "カトリーヌ・ド・メディシス（黒妃）",
+        "civilization": "フランス"
+    },
+    {
+        "id": "catherine_magnificence",
+        "name": "カトリーヌ・ド・メディシス（麗妃）",
+        "civilization": "フランス"
+    },
+    {
+        "id": "gandhi",
+        "name": "ガンジー",
+        "civilization": "インド"
+    },
+    {
+        "id": "gitarja",
+        "name": "ギターチャ",
+        "civilization": "インドネシア"
+    },
+    {
+        "id": "cyrus",
+        "name": "キュロス",
+        "civilization": "ペルシア"
+    },
+    {
+        "id": "gilgamesh",
+        "name": "ギルガメシュ",
+        "civilization": "シュメール"
+    },
+    {
+        "id": "kupe",
+        "name": "クペ",
+        "civilization": "マオリ"
+    },
+    {
+        "id": "kristina",
+        "name": "クリスティーナ",
+        "civilization": "スウェーデン"
+    },
+    {
+        "id": "cleopatra",
+        "name": "クレオパトラ（エジプト）",
+        "civilization": "エジプト"
+    },
+    {
+        "id": "cleopatra_ptolemaic",
+        "name": "クレオパトラ（プトレマイオス朝）",
+        "civilization": "エジプト"
+    },
+    {
+        "id": "gorgo",
+        "name": "ゴルゴー",
+        "civilization": "ギリシャ"
+    },
+    {
+        "id": "sultan_saladin",
+        "name": "サラディン（スルタン）",
+        "civilization": "アラビア"
+    },
+    {
+        "id": "saladin",
+        "name": "サラディン（宰相）",
+        "civilization": "アラビア"
+    },
+    {
+        "id": "simon_bolivar",
+        "name": "シモン・ボリバル",
+        "civilization": "大コロンビア"
+    },
+    {
+        "id": "shaka",
+        "name": "シャカ",
+        "civilization": "ズールー"
+    },
+    {
+        "id": "jayavarman",
+        "name": "ジャヤーヴァルマン7世",
+        "civilization": "クメール"
+    },
+    {
+        "id": "joao",
+        "name": "ジョアン3世",
+        "civilization": "ポルトガル"
+    },
+    {
+        "id": "john_curtin",
+        "name": "ジョン・カーティン",
+        "civilization": "オーストラリア"
+    },
+    {
+        "id": "suleiman_muhtesem",
+        "name": "スレイマン1世（壮麗帝）",
+        "civilization": "オスマン"
+    },
+    {
+        "id": "suleiman",
+        "name": "スレイマン1世（立法帝）",
+        "civilization": "オスマン"
+    },
+    {
+        "id": "sundiata_keita",
+        "name": "スンジャタ・ケイタ",
+        "civilization": "マリ"
+    },
+    {
+        "id": "seondeok",
+        "name": "ソンドク",
+        "civilization": "韓国"
+    },
+    {
+        "id": "tamar",
+        "name": "タマル",
+        "civilization": "グルジア"
+    },
+    {
+        "id": "chandragupta",
+        "name": "チャンドラグプタ",
+        "civilization": "インド"
+    },
+    {
+        "id": "genghis_khan",
+        "name": "チンギス・ハン",
+        "civilization": "モンゴル"
+    },
+    {
+        "id": "dido",
+        "name": "ディードー",
+        "civilization": "フェニキア"
+    },
+    {
+        "id": "theodora",
+        "name": "テオドラ",
+        "civilization": "ビザンティン"
+    },
+    {
+        "id": "teddy",
+        "name": "テディ・ルーズベルト（ブルムース）",
+        "civilization": "アメリカ"
+    },
+    {
+        "id": "teddy_roughrider",
+        "name": "テディ・ルーズベルト（ラフライダー）",
+        "civilization": "アメリカ"
+    },
+    {
+        "id": "tomyris",
+        "name": "トミュリス",
+        "civilization": "スキタイ"
+    },
+    {
+        "id": "trajan",
+        "name": "トラヤヌス",
+        "civilization": "ローマ"
+    },
+    {
+        "id": "nader_shah",
+        "name": "ナーディル・シャー",
+        "civilization": "ペルシア"
+    },
+    {
+        "id": "poundmaker",
+        "name": "パウンドメーカー",
+        "civilization": "クリー"
+    },
+    {
+        "id": "basil",
+        "name": "バシレイオス2世",
+        "civilization": "ビザンティン"
+    },
+    {
+        "id": "pachacuti",
+        "name": "パチャクティ",
+        "civilization": "インカ"
+    },
+    {
+        "id": "hammurabi",
+        "name": "ハンムラビ",
+        "civilization": "バビロン"
+    },
+    {
+        "id": "peter",
+        "name": "ピョートル",
+        "civilization": "ロシア"
+    },
+    {
+        "id": "philip",
+        "name": "フェリペ2世",
+        "civilization": "スペイン"
+    },
+    {
+        "id": "kublai_mongolia",
+        "name": "フビライ・ハン（モンゴル）",
+        "civilization": "モンゴル"
+    },
+    {
+        "id": "kublai_china",
+        "name": "フビライ・ハン（中国）",
+        "civilization": "中国"
+    },
+    {
+        "id": "pedro",
+        "name": "ペドロ2世",
+        "civilization": "ブラジル"
+    },
+    {
+        "id": "pericles",
+        "name": "ペリクレス",
+        "civilization": "ギリシャ"
+    },
+    {
+        "id": "matthias_corvinus",
+        "name": "マティアス・コルヴィヌス",
+        "civilization": "ハンガリー"
+    },
+    {
+        "id": "mansa_musa",
+        "name": "マンサ・ムーサ",
+        "civilization": "マリ"
+    },
+    {
+        "id": "mvemba",
+        "name": "ムベンバ・ア・ンジンガ",
+        "civilization": "コンゴ"
+    },
+    {
+        "id": "menelik",
+        "name": "メネリク2世",
+        "civilization": "エチオピア"
+    },
+    {
+        "id": "montezuma",
+        "name": "モンテスマ",
+        "civilization": "アステカ"
+    },
+    {
+        "id": "jadwiga",
+        "name": "ヤドヴィガ",
+        "civilization": "ポーランド"
+    },
+    {
+        "id": "julius_caesar",
+        "name": "ユリウス・カエサル",
+        "civilization": "ローマ"
+    },
+    {
+        "id": "lautaro",
+        "name": "ラウタロ",
+        "civilization": "マプチェ"
+    },
+    {
+        "id": "ramses",
+        "name": "ラムセス2世",
+        "civilization": "エジプト"
+    },
+    {
+        "id": "ludwig",
+        "name": "ルートヴィヒ2世",
+        "civilization": "ドイツ"
+    },
+    {
+        "id": "lady_six_sky",
+        "name": "レディ・シックス・スカイ",
+        "civilization": "マヤ"
+    },
+    {
+        "id": "robert_the_bruce",
+        "name": "ロバート・ブルース",
+        "civilization": "スコットランド"
+    },
+    {
+        "id": "nzinga_mbande",
+        "name": "ンジンガ・ムバンデ",
+        "civilization": "コンゴ"
+    },
+    {
+        "id": "yongle",
+        "name": "永楽帝",
+        "civilization": "中国"
+    },
+    {
+        "id": "harald_varangian",
+        "name": "苛烈王ハーラル3世（ヴァリャーギ）",
+        "civilization": "ノルウェー"
+    },
+    {
+        "id": "harald",
+        "name": "苛烈王ハーラル3世（王）",
+        "civilization": "ノルウェー"
+    },
+    {
+        "id": "qinshihuang",
+        "name": "始皇帝（天命）",
+        "civilization": "中国"
+    },
+    {
+        "id": "qin_unifier",
+        "name": "始皇帝（統一者）",
+        "civilization": "中国"
+    },
+    {
+        "id": "sejong",
+        "name": "世宗大王",
+        "civilization": "韓国"
+    },
+    {
+        "id": "frederick",
+        "name": "赤髭王フリードリヒ1世",
+        "civilization": "ドイツ"
+    },
+    {
+        "id": "tokugawa",
+        "name": "徳川家康",
+        "civilization": "日本"
+    },
+    {
+        "id": "wu_zetian",
+        "name": "武則天",
+        "civilization": "中国"
+    },
+    {
+        "id": "tokimune",
+        "name": "北条時宗",
+        "civilization": "日本"
+    },
+    {
+        "id": "ba_trieu",
+        "name": "趙氏貞",
+        "civilization": "ベトナム"
+    }
+]

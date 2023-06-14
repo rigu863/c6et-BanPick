@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>C6ET BAN PICK</title>
+
+        <meta name="robots" content="noindex,nofollow">
+
+        <script src="./src/vue.global.js"></script>
+        <script src="./src/axios.min.js"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./css/reset.css">
+        <link rel="stylesheet" href="./css/style.css">
+
+    </head>
+    <body>
+        <div id="app">
+            <div id="leader_selector">
+                <div @click="pulldownShow" class="imageSelectorDisplay">
+                    <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
+                    {{ selectLeader.name }}
+                </div>
+                <div class="imageSelectorPulldown">
+                    <div @click="clickSelectLeader" v-for="leader in leaders" :class="{'target': leader.id === selectLeader.id, 'imageSelectorOption': true}" :data-value="leader.id">
+                        <img :src="'./img/' + leader.id + '.webp'" alt="">
+                        {{ leader.name }}
+                    </div>
+                </div>
+            </div>
+            <button @click="submitButton">
+                決定
+            </button>
+        </div>
+    </body>
+
+    <script>
+
+        Vue.createApp({
+            data() {
+                return {
+                    leaders: {
+                        obj: {
+                            id: "",
+                            name: "",
+                            civilization: "",
+                        },
+                    },
+                    selectLeader: {
+                        id: "",
+                        name: "指導者を選択してください",
+                        civilization: "",
+                    },
+                    redBanLeader: [],
+                    blueBanLeader: [],
+                    firstBanCount: 6,
+                    secondBanCount: 4,
+                    redBanCount: 0,
+                    blueBanCount: 0,
+                    redPickLeader: [],
+                    bluePickLeader: [],
+                    firstPickCount: 4,
+                    secondPickCount: 4,
+                    redPickCount: 0,
+                    bluePickCount: 0,
+                    turn: "firstRedBan",
+                }
+            },
+            methods: {
+                getLeaders() {
+                    axios.get('./json/leaders.json')
+                    .then(response => {
+                        this.leaders = response.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                },
+                pulldownShow() {
+                    const pulldown = document.querySelector('.imageSelectorPulldown');
+                    pulldown.classList.toggle('show');
+                },
+                clickSelectLeader() {
+                    const leaderId = event.target.dataset.value;
+                    const selectedLeader = this.leaders.find(leader => leader.id == leaderId);
+
+                    if (selectedLeader) {
+                        this.selectLeader.id = selectedLeader.id;
+                        this.selectLeader.name = selectedLeader.name;
+                        this.selectLeader.civilization = selectedLeader.civilization;
+                        this.pulldownShow();
+                    }
+                },
+                submitButton() {
+                    console.log(this.turn);
+                    console.log(this.redBanCount);
+                    console.log(this.blueBanCount);
+
+                    // 1st Ban
+                    if (this.turn == "firstRedBan") {
+                        this.redBanLeader[this.redBanCount] = this.selectLeader.id;
+                        this.redBanCount++;
+                        this.turn = "firstBlueBan";
+                        return;
+                    } else if (this.turn == "firstBlueBan") {
+                        this.blueBanLeader[this.blueBanCount] = this.selectLeader.id;
+                        this.blueBanCount++;
+                        this.turn = "firstRedBan";
+
+                        // 1st Banの終了
+                        if (this.redBanCount + this.blueBanCount == this.firstBanCount) {
+                            this.turn = "firstRedPick";
+                        }
+                        return;
+                    }
+
+                    // 1st Pick
+                    if (this.turn == "firstRedPick") {
+                        this.redPickLeader[this.redPickCount] = this.selectLeader.id;
+                        this.redPickCount++;
+                        if (this.redPickCount == 1) {
+                            this.turn = "firstBluePick";
+                        } else if (this.redPickCount == 2) {
+                            this.turn = "secondBlueBan";
+                        }
+                        return;
+                    } else if (this.turn == "firstBluePick") {
+                        this.bluePickLeader[this.bluePickCount] = this.selectLeader.id;
+                        this.bluePickCount++;
+                        if (this.bluePickCount == 2) {
+                            this.turn = "firstRedPick";
+                        }
+                        return;
+                    }
+
+                    // 2nd Ban
+                    if (this.turn == "secondBlueBan") {
+                        this.blueBanLeader[this.blueBanCount] = this.selectLeader.id;
+                        this.blueBanCount++;
+                        this.turn = "secondRedBan";
+                        return;
+                    } else if (this.turn == "secondRedBan") {
+                        this.redBanLeader[this.redBanCount] = this.selectLeader.id;
+                        this.redBanCount++;
+                        this.turn = "secondBlueBan";
+
+                        // 2nd Banの終了
+                        if (this.redBanCount + this.blueBanCount == this.firstBanCount + this.secondBanCount) {
+                            this.turn = "secondBluePick";
+                        }
+                        return;
+                    }
+
+                    // 2nd Pick
+                    if (this.turn == "secondBluePick") {
+                        this.bluePickLeader[this.bluePickCount] = this.selectLeader.id;
+                        this.bluePickCount++;
+                        if (this.bluePickCount == 1 + this.firstPickCount / 2) {
+                            this.turn = "secondRedPick";
+                        } else if (this.bluePickCount == 2 + this.firstPickCount / 2) {
+                            this.turn = "finish";
+                        }
+                        return;
+                    } else if (this.turn == "secondRedPick") {
+                        this.redPickLeader[this.redPickCount] = this.selectLeader.id;
+                        this.redPickCount++;
+                        if (this.redPickCount == 2 + this.firstPickCount / 2) {
+                            this.turn = "secondBluePick";
+                        }
+                        return;
+                    }
+
+                }
+            },
+            mounted() {
+                this.getLeaders();
+                
+            },
+        }).mount('#app')
+    </script>
+
+    <style>
+        #leader_selector {
+            position: relative;
+        }
+        .imageSelectorDisplay {
+            width: 500px;
+            position: relative;
+            border: 1px solid #333;
+        }
+        .imageSelectorPulldown {
+            display: none;
+            width: 500px;
+            height: 500px;
+            overflow-y: scroll;
+            flex-direction: column;
+            position: absolute;
+            left: 0;
+            top: 100px;
+            display: none;
+        }
+        .imageSelectorPulldown.show {
+            display: inline-flex;
+        }
+        .imageSelectorOption,
+        .imageSelectorDisplay {
+            height: 100px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+        .imageSelectorDisplay::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-top: 10px solid #333;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            transform: translateY(25%);
+            position: absolute;
+            right: 1rem;
+        }
+        .imageSelectorOption img,
+        .imageSelectorDisplay img {
+            height: 100%;
+        }
+        .imageSelectorOption.target {
+            background-color: #3ea8ff;
+            color: #fff;
+        }
+    </style>
+</html>
