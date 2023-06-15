@@ -13,6 +13,9 @@
         <script src="./src/vue.global.js"></script>
         <script src="./src/axios.min.js"></script>
 
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
@@ -41,6 +44,16 @@
     </body>
 
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7Ns51RrOJJVhAH2wQmNsnLLvn7SDrgEQ",
+            authDomain: "c6et-6ca04.firebaseapp.com",
+            projectId: "c6et-6ca04",
+            storageBucket: "c6et-6ca04.appspot.com",
+            messagingSenderId: "19203618185",
+            appId: "1:19203618185:web:474848fa1c3c246c6a9d58"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         Vue.createApp({
             data() {
@@ -98,6 +111,7 @@
                     if (this.turn == "firstRedBan") {
                         this.redBanLeader.push(this.selectLeader.id);
                         this.turn = "firstBlueBan";
+                        this.dbUpdate();
                         return;
                     } else if (this.turn == "firstBlueBan") {
                         this.blueBanLeader.push(this.selectLeader.id);
@@ -109,6 +123,7 @@
                         if (redBanCount + blueBanCount == this.firstBanCount) {
                             this.turn = "firstRedPick";
                         }
+                        this.dbUpdate();
                         return;
                     }
 
@@ -122,7 +137,9 @@
                         } else if (redPickCount == 2) {
                             this.turn = "secondBlueBan";
                         }
+                        this.dbUpdate();
                         return;
+
                     } else if (this.turn == "firstBluePick") {
                         this.bluePickLeader.push(this.selectLeader.id);
 
@@ -130,6 +147,7 @@
                         if (bluePickCount == 2) {
                             this.turn = "firstRedPick";
                         }
+                        this.dbUpdate();
                         return;
                     }
 
@@ -137,7 +155,9 @@
                     if (this.turn == "secondBlueBan") {
                         this.blueBanLeader.push(this.selectLeader.id);
                         this.turn = "secondRedBan";
+                        this.dbUpdate();
                         return;
+
                     } else if (this.turn == "secondRedBan") {
                         this.redBanLeader.push(this.selectLeader.id);
                         this.turn = "secondBlueBan";
@@ -148,6 +168,7 @@
                         if (redBanCount + blueBanCount == this.firstBanCount + this.secondBanCount) {
                             this.turn = "secondBluePick";
                         }
+                        this.dbUpdate();
                         return;
                     }
 
@@ -161,6 +182,7 @@
                         } else if (bluePickCount == 2 + this.firstPickCount / 2) {
                             this.turn = "finish";
                         }
+                        this.dbUpdate();
                         return;
 
                     } else if (this.turn == "secondRedPick") {
@@ -170,14 +192,47 @@
                         if (redPickCount == 2 + this.firstPickCount / 2) {
                             this.turn = "secondBluePick";
                         }
+                        this.dbUpdate();
                         return;
                     }
 
-                }
+                },
+                dbUpdate() {
+                    db.collection("BanPick").doc("Data").set({
+                        redBanLeader: this.redBanLeader,
+                        blueBanLeader: this.blueBanLeader,
+                        firstBanCount: this.firstBanCount,
+                        secondBanCount: this.secondBanCount,
+                        redPickLeader: this.redPickLeader,
+                        bluePickLeader: this.bluePickLeader,
+                        firstPickCount: this.firstPickCount,
+                        secondPickCount: this.secondPickCount,
+                        turn: this.turn
+                    });
+                },
+                dbSync() {
+                    db.collection("BanPick").doc("Data")
+                    .onSnapshot((doc) => {
+                        if (doc.exists) {
+                            let firestoreData = doc.data();
+                            this.redBanLeader = firestoreData.redBanLeader;
+                            this.blueBanLeader = firestoreData.blueBanLeader;
+                            this.firstBanCount = firestoreData.firstBanCount;
+                            this.secondBanCount = firestoreData.secondBanCount;
+                            this.redPickLeader = firestoreData.redPickLeader;
+                            this.bluePickLeader = firestoreData.bluePickLeader;
+                            this.firstPickCount = firestoreData.firstPickCount;
+                            this.secondPickCount = firestoreData.secondPickCount;
+                            this.turn = firestoreData.turn;
+                        } else {
+                            console.log("No such document!");
+                        }
+                    });
+                },
             },
             mounted() {
                 this.getLeaders();
-                
+                this.dbSync();
             },
         }).mount('#app')
     </script>
