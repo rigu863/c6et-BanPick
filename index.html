@@ -25,24 +25,28 @@
     </head>
     <body>
         <div id="app">
-            <div id="leader_selector">
-                <div @click="pulldownShow" class="imageSelectorDisplay">
-                    <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
-                    {{ selectLeader.name }}
-                </div>
-                <div class="imageSelectorPulldown">
-                    <div @click="clickSelectLeader" v-for="leader in leaders" :class="{'target': leader.id === selectLeader.id, 'imageSelectorOption': true}" :data-value="leader.id">
-                        <img :src="'./img/' + leader.id + '.webp'" alt="">
-                        {{ leader.name }}
+            <div v-if="userType == turn">
+                <div id="leader_selector">
+                    <div @click="pulldownShow" class="imageSelectorDisplay">
+                        <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
+                        {{ selectLeader.name }}
+                    </div>
+                    <div class="imageSelectorPulldown">
+                        <div @click="clickSelectLeader" v-for="leader in leaders" :class="{'target': leader.id === selectLeader.id, 'imageSelectorOption': true}" :data-value="leader.id">
+                            <img :src="'./img/' + leader.id + '.webp'" alt="">
+                            {{ leader.name }}
+                        </div>
                     </div>
                 </div>
+                <button @click="submitButton">
+                    決定
+                </button>
             </div>
-            <button @click="submitButton">
-                決定
-            </button>
-            <button @click="resetBanpick">
-                Ban Pick リセット
-            </button>
+            <div v-if="userType =='admin'">
+                <button @click="resetBanpick">
+                    Ban Pick リセット
+                </button>
+            </div>
         </div>
     </body>
 
@@ -81,13 +85,14 @@
                     bluePickLeader: [],
                     firstPickCount: 4,
                     secondPickCount: 4,
-                    turn: "firstRedBan",
+                    stage: "firstBan",
+                    turn: "redTeam",
                     userType: "",
                 }
             },
             methods: {
                 getLeaders() {
-                    axios.get('./json/leaders.json')
+                    axios.get("./json/leaders.json")
                     .then(response => {
                         this.leaders = response.data
                     })
@@ -96,8 +101,8 @@
                     })
                 },
                 pulldownShow() {
-                    const pulldown = document.querySelector('.imageSelectorPulldown');
-                    pulldown.classList.toggle('show');
+                    const pulldown = document.querySelector(".imageSelectorPulldown");
+                    pulldown.classList.toggle("show");
                 },
                 clickSelectLeader() {
                     const leaderId = event.target.dataset.value;
@@ -112,89 +117,93 @@
                 },
                 submitButton() {
                     // 1st Ban
-                    if (this.turn == "firstRedBan" && this.userType == 'redTeam') {
+                    if (this.stage == "firstBan" && this.turn == "redTeam" && this.userType == "redTeam") {
                         this.redBanLeader.push(this.selectLeader.id);
-                        this.turn = "firstBlueBan";
+                        this.turn = "blueTeam";
                         this.dbUpdate();
                         return;
-                    } else if (this.turn == "firstBlueBan" && this.userType == 'blueTeam') {
+                    } else if (this.stage == "firstBan" && this.turn == "blueTeam" && this.userType == "blueTeam") {
                         this.blueBanLeader.push(this.selectLeader.id);
-                        this.turn = "firstRedBan";
+                        this.turn = "redTeam";
 
                         // 1st Banの終了
                         let redBanCount = this.redBanLeader.length;
                         let blueBanCount = this.blueBanLeader.length;
                         if (redBanCount + blueBanCount == this.firstBanCount) {
-                            this.turn = "firstRedPick";
+                            this.stage = "firstPick";
+                            this.turn = "redTeam";
                         }
                         this.dbUpdate();
                         return;
                     }
 
                     // 1st Pick
-                    if (this.turn == "firstRedPick" && this.userType == 'redTeam') {
+                    if (this.stage == "firstPick" && this.turn == "redTeam" && this.userType == "redTeam") {
                         this.redPickLeader.push(this.selectLeader.id);
                         
                         let redPickCount = this.redPickLeader.length;
                         if (redPickCount == 1) {
-                            this.turn = "firstBluePick";
+                            this.turn = "blueTeam";
                         } else if (redPickCount == 2) {
-                            this.turn = "secondBlueBan";
+                            this.stage = "secondBan";
+                            this.turn = "blueTeam";
                         }
                         this.dbUpdate();
                         return;
 
-                    } else if (this.turn == "firstBluePick" && this.userType == 'blueTeam') {
+                    } else if (this.stage == "firstPick" && this.turn == "blueTeam" && this.userType == "blueTeam") {
                         this.bluePickLeader.push(this.selectLeader.id);
 
                         let bluePickCount = this.bluePickLeader.length;
                         if (bluePickCount == 2) {
-                            this.turn = "firstRedPick";
+                            this.turn = "redTeam";
                         }
                         this.dbUpdate();
                         return;
                     }
 
                     // 2nd Ban
-                    if (this.turn == "secondBlueBan" && this.userType == 'blueTeam') {
+                    if (this.stage == "secondBan" && this.turn == "blueTeam" && this.userType == "blueTeam") {
                         this.blueBanLeader.push(this.selectLeader.id);
-                        this.turn = "secondRedBan";
+                        this.turn = "redTeam";
                         this.dbUpdate();
                         return;
 
-                    } else if (this.turn == "secondRedBan" && this.userType == 'redTeam') {
+                    } else if (this.stage == "secondBan" &&  this.turn == "redTeam" && this.userType == "redTeam") {
                         this.redBanLeader.push(this.selectLeader.id);
-                        this.turn = "secondBlueBan";
+                        this.turn = "blueTeam";
 
                         // 2nd Banの終了
                         let redBanCount = this.redBanLeader.length;
                         let blueBanCount = this.blueBanLeader.length;
                         if (redBanCount + blueBanCount == this.firstBanCount + this.secondBanCount) {
-                            this.turn = "secondBluePick";
+                            this.stage = "secondPick";
+                            this.turn = "blueTeam";
                         }
                         this.dbUpdate();
                         return;
                     }
 
                     // 2nd Pick
-                    if (this.turn == "secondBluePick" && this.userType == 'blueTeam') {
+                    if (this.stage == "secondPick" && this.turn == "blueTeam" && this.userType == "blueTeam") {
                         this.bluePickLeader.push(this.selectLeader.id);
 
                         let bluePickCount = this.bluePickLeader.length;
                         if (bluePickCount == 1 + this.firstPickCount / 2) {
-                            this.turn = "secondRedPick";
+                            this.turn = "redTeam";
                         } else if (bluePickCount == 2 + this.firstPickCount / 2) {
+                            this.stage = "finish";
                             this.turn = "finish";
                         }
                         this.dbUpdate();
                         return;
 
-                    } else if (this.turn == "secondRedPick" && this.userType == 'redTeam') {
+                    } else if (this.stage == "secondPick" && this.turn == "redTeam" && this.userType == "redTeam") {
                         this.redPickLeader.push(this.selectLeader.id);
 
                         let redPickCount = this.redPickLeader.length;
                         if (redPickCount == 2 + this.firstPickCount / 2) {
-                            this.turn = "secondBluePick";
+                            this.turn = "blueTeam";
                         }
                         this.dbUpdate();
                         return;
@@ -211,7 +220,8 @@
                         bluePickLeader: this.bluePickLeader,
                         firstPickCount: this.firstPickCount,
                         secondPickCount: this.secondPickCount,
-                        turn: this.turn
+                        stage: this.stage,
+                        turn: this.turn,
                     });
                 },
                 dbSync() {
@@ -227,6 +237,7 @@
                             this.bluePickLeader = firestoreData.bluePickLeader;
                             this.firstPickCount = firestoreData.firstPickCount;
                             this.secondPickCount = firestoreData.secondPickCount;
+                            this.stage = firestoreData.stage;
                             this.turn = firestoreData.turn;
                         } else {
                             console.log("No such document!");
@@ -238,17 +249,18 @@
                     this.blueBanLeader = [];
                     this.redPickLeader = [];
                     this.bluePickLeader = [];
-                    this.turn = "firstRedBan";
+                    this.stage = "firstBan";
+                    this.turn = "redTeam";
                     this.dbUpdate();
                 },
             },
             mounted() {
                 this.getLeaders();
                 const urlParams = new URLSearchParams(window.location.search);
-                this.userType = urlParams.get('userType');
+                this.userType = urlParams.get("userType");
                 this.dbSync();
             },
-        }).mount('#app')
+        }).mount("#app")
     </script>
 
     <style>
