@@ -40,6 +40,9 @@
             <button @click="submitButton">
                 決定
             </button>
+            <button @click="resetBanpick">
+                Ban Pick リセット
+            </button>
         </div>
     </body>
 
@@ -79,6 +82,7 @@
                     firstPickCount: 4,
                     secondPickCount: 4,
                     turn: "firstRedBan",
+                    userType: "",
                 }
             },
             methods: {
@@ -108,12 +112,12 @@
                 },
                 submitButton() {
                     // 1st Ban
-                    if (this.turn == "firstRedBan") {
+                    if (this.turn == "firstRedBan" && this.userType == 'redTeam') {
                         this.redBanLeader.push(this.selectLeader.id);
                         this.turn = "firstBlueBan";
                         this.dbUpdate();
                         return;
-                    } else if (this.turn == "firstBlueBan") {
+                    } else if (this.turn == "firstBlueBan" && this.userType == 'blueTeam') {
                         this.blueBanLeader.push(this.selectLeader.id);
                         this.turn = "firstRedBan";
 
@@ -128,7 +132,7 @@
                     }
 
                     // 1st Pick
-                    if (this.turn == "firstRedPick") {
+                    if (this.turn == "firstRedPick" && this.userType == 'redTeam') {
                         this.redPickLeader.push(this.selectLeader.id);
                         
                         let redPickCount = this.redPickLeader.length;
@@ -140,7 +144,7 @@
                         this.dbUpdate();
                         return;
 
-                    } else if (this.turn == "firstBluePick") {
+                    } else if (this.turn == "firstBluePick" && this.userType == 'blueTeam') {
                         this.bluePickLeader.push(this.selectLeader.id);
 
                         let bluePickCount = this.bluePickLeader.length;
@@ -152,13 +156,13 @@
                     }
 
                     // 2nd Ban
-                    if (this.turn == "secondBlueBan") {
+                    if (this.turn == "secondBlueBan" && this.userType == 'blueTeam') {
                         this.blueBanLeader.push(this.selectLeader.id);
                         this.turn = "secondRedBan";
                         this.dbUpdate();
                         return;
 
-                    } else if (this.turn == "secondRedBan") {
+                    } else if (this.turn == "secondRedBan" && this.userType == 'redTeam') {
                         this.redBanLeader.push(this.selectLeader.id);
                         this.turn = "secondBlueBan";
 
@@ -173,7 +177,7 @@
                     }
 
                     // 2nd Pick
-                    if (this.turn == "secondBluePick") {
+                    if (this.turn == "secondBluePick" && this.userType == 'blueTeam') {
                         this.bluePickLeader.push(this.selectLeader.id);
 
                         let bluePickCount = this.bluePickLeader.length;
@@ -185,7 +189,7 @@
                         this.dbUpdate();
                         return;
 
-                    } else if (this.turn == "secondRedPick") {
+                    } else if (this.turn == "secondRedPick" && this.userType == 'redTeam') {
                         this.redPickLeader.push(this.selectLeader.id);
 
                         let redPickCount = this.redPickLeader.length;
@@ -229,9 +233,19 @@
                         }
                     });
                 },
+                resetBanpick() {
+                    this.redBanLeader = [];
+                    this.blueBanLeader = [];
+                    this.redPickLeader = [];
+                    this.bluePickLeader = [];
+                    this.turn = "firstRedBan";
+                    this.dbUpdate();
+                },
             },
             mounted() {
                 this.getLeaders();
+                const urlParams = new URLSearchParams(window.location.search);
+                this.userType = urlParams.get('userType');
                 this.dbSync();
             },
         }).mount('#app')
