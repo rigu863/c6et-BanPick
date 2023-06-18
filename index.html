@@ -26,17 +26,17 @@
     <body>
         <div id="app">
             <div class="mainView">
-                <div class="redView pickList">
-                    <div v-for="redPickLeader in redPickLeaders">
+                <transition-group name="pickItem" tag="div" class="redView pickList">
+                    <div v-for="(redPickLeader, index)  in redPickLeaders" :key="index">
                         {{ redPickLeader.name }}
                         <img :src="'./img/' + redPickLeader.id + '.webp'" alt="">
                     </div>
-                </div>
-                <div class="redView banList">
-                    <div v-for="redBanLeader in redBanLeaders">
+                </transition-group>
+                <transition-group name="banItem" tag="div" class="redView banList">
+                    <div v-for="(redBanLeader, index) in redBanLeaders" :key="index">
                         <img :src="'./img/' + redBanLeader.id + '.webp'" alt="">
                     </div>
-                </div>
+                </transition-group>
     
                 <div v-if="userType == turn">
                     <div id="leader_selector">
@@ -56,17 +56,17 @@
                     </button>
                 </div>
     
-                <div class="blueView pickList">
-                    <div v-for="bluePickLeader in bluePickLeaders">
+                <transition-group name="pickItem" tag="div"  class="blueView pickList">
+                    <div v-for="(bluePickLeader, index) in bluePickLeaders" :key="index">
                         {{ bluePickLeader.name }}
                         <img :src="'./img/' + bluePickLeader.id + '.webp'" alt="">
                     </div>
-                </div>
-                <div class="blueView banList">
-                    <div v-for="blueBanLeader in blueBanLeaders">
+                </transition-group>
+                <transition-group name="banItem" tag="div" class="blueView banList">
+                    <div v-for="(blueBanLeader, index) in blueBanLeaders" :key="index">
                         <img :src="'./img/' + blueBanLeader.id + '.webp'" alt="">
                     </div>
-                </div>
+                </transition-group>
             </div>
 
             <div v-if="userType =='admin'">
@@ -289,7 +289,7 @@
             height: 100vh;
             display: grid;
             grid-template-columns: 700px 1fr 700px;
-            grid-template-rows: 4fr 1fr 2fr;
+            grid-template-rows: 630px 1fr;
             background-image: linear-gradient(to bottom, #123657, #103352);
             color: #fff;
         }
@@ -314,18 +314,54 @@
             padding: 10px 40px;
             background-image: linear-gradient(40deg, #05253e, #154a73);
             box-shadow: #04192a 0 2px 2px 1px;
+            transition: 0.7s all;
+            position: relative;
+            left: 0;
+        }
+        .pickList .pickItem-enter-active {
+            visibility: hidden;
+            animation: pickItem-enter 0.7s ease-in-out forwards;
+        }
+        @keyframes pickItem-enter {
+            0% {
+                visibility: visible;
+                left: -100%;
+            }
+            90% {
+                left: 2%;
+            }
+            100% {
+                left: 0;
+            }
         }
         .pickList div img {
-            width: 140px;
+            width: 130px;
         }
         .pickList.blueView div {
             background-image: linear-gradient(320deg, #05253e, #154a73);
+            left: auto;
+            right: 0;
+        }
+        .pickList.blueView .pickItem-enter-active {
+            animation: pickItemBlue-enter 0.7s ease-in-out forwards;
+        }
+        @keyframes pickItemBlue-enter {
+            0% {
+                visibility: visible;
+                right: -100%;
+            }
+            90% {
+                right: 2%;
+            }
+            100% {
+                right: 0;
+            }
         }
         .pickList.blueView div img {
             order: -1;
         }
         .banList {
-            grid-row: 3 / 3;
+            grid-row: 2 / 2;
             display: flex;
             align-content: flex-start;
             flex-wrap: wrap;
@@ -336,7 +372,27 @@
             width: 100px;
             height: 100px;
             position: relative;
-            transition: 5s all;
+            filter: grayscale(1);
+            transition: 0.7s all;
+        }
+        .banList .banItem-enter-active {
+            visibility: hidden;
+            animation: banItem-enter 0.7s forwards;
+        }
+        @keyframes banItem-enter {
+            0% {
+                visibility: visible;
+                transform: scale(0.7);
+                filter: grayscale(0);
+            }
+            90% {
+                transform: scale(1.05);
+                filter: grayscale(0);
+            }
+            100% {
+                transform: scale(1);
+                filter: grayscale(1);
+            }
         }
         .banList div::before {
             content: "";
