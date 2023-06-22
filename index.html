@@ -55,6 +55,7 @@
                         </button>
                     </div>
                 </div>
+                {{ timeLeft }}
     
                 <transition-group name="pickItem" tag="div"  class="blueView pickList">
                     <div v-for="(bluePickLeader, index) in bluePickLeaders" :key="index">
@@ -72,6 +73,9 @@
             <div v-if="userType =='admin'">
                 <button @click="resetBanpick">
                     Ban Pick リセット
+                </button>
+                <button @click="startBanpick">
+                    Ban Pick スタート
                 </button>
             </div>
         </div>
@@ -109,6 +113,10 @@
                     stage: "firstBan",
                     turn: "redTeam",
                     userType: "",
+                    timer: null,
+                    timeLimit: 60,
+                    timeLeft: 0,
+                    timeNum: 0,
                 }
             },
             methods: {
@@ -137,12 +145,15 @@
                     }
                 },
                 submitButton() {
+                    this.startTimer();
+
                     // 1st Ban
                     if (this.stage == "firstBan" && this.turn == "redTeam" && this.userType == "redTeam") {
                         this.redBanLeaders.push(this.selectLeader);
                         this.turn = "blueTeam";
                         this.dbUpdate();
                         return;
+
                     } else if (this.stage == "firstBan" && this.turn == "blueTeam" && this.userType == "blueTeam") {
                         this.blueBanLeaders.push(this.selectLeader);
                         this.turn = "redTeam";
@@ -215,6 +226,12 @@
                         } else if (bluePickCount == 2 + this.firstPickCount / 2) {
                             this.stage = "finish";
                             this.turn = "finish";
+                            this.timeNum = 0;
+                            if (this.timer) {
+                                clearInterval(this.timer);
+                                this.timer = null;
+                                this.timeLeft = 0;
+                            }
                         }
                         this.dbUpdate();
                         return;
@@ -231,18 +248,51 @@
                     }
 
                 },
+                startTimer() {
+                    this.timeNum ++;
+                    // 既存のタイマーがある場合はクリア
+                    if (this.timer) {
+                        clearInterval(this.timer);
+                        this.timer = null;
+                        this.timeLeft = 0;
+                    }
+
+                    // タイマーの開始
+                    this.timeLeft = this.timeLimit;
+                    this.timer = setInterval(() => {
+                        if (this.timeLeft <= 0) {
+                            // 時間が切れた場合の処理
+                            clearInterval(this.timer);
+                            this.timer = null;
+                            this.timeLeft = 0;
+
+                            // リーダーのランダム選択
+                            this.selectRandomLeader();
+                            this.submitButton();
+                        } else {
+                            this.timeLeft--;
+                        }
+                    }, 1000);
+                },
+                selectRandomLeader() {
+                    const randomIndex = Math.floor(Math.random() * this.leaders.length);
+                    const selectedLeader = this.leaders[randomIndex];
+
+                    if (selectedLeader) {
+                        this.selectLeader.id = selectedLeader.id;
+                        this.selectLeader.name = selectedLeader.name;
+                        this.selectLeader.civilization = selectedLeader.civilization;
+                    }
+                },
                 dbUpdate() {
                     db.collection("BanPick").doc("Data").set({
                         redBanLeaders: this.redBanLeaders,
                         blueBanLeaders: this.blueBanLeaders,
-                        firstBanCount: this.firstBanCount,
-                        secondBanCount: this.secondBanCount,
                         redPickLeaders: this.redPickLeaders,
                         bluePickLeaders: this.bluePickLeaders,
-                        firstPickCount: this.firstPickCount,
-                        secondPickCount: this.secondPickCount,
                         stage: this.stage,
                         turn: this.turn,
+                        timeNum: this.timeNum,
                     });
                 },
                 dbSync() {
@@ -252,18 +302,29 @@
                             let firestoreData = doc.data();
                             this.redBanLeaders = firestoreData.redBanLeaders;
                             this.blueBanLeaders = firestoreData.blueBanLeaders;
-                            this.firstBanCount = firestoreData.firstBanCount;
-                            this.secondBanCount = firestoreData.secondBanCount;
                             this.redPickLeaders = firestoreData.redPickLeaders;
                             this.bluePickLeaders = firestoreData.bluePickLeaders;
-                            this.firstPickCount = firestoreData.firstPickCount;
-                            this.secondPickCount = firestoreData.secondPickCount;
                             this.stage = firestoreData.stage;
                             this.turn = firestoreData.turn;
+                            if (this.timeNum < firestoreData.timeNum) {
+                                this.startTimer();
+                            }
+                            this.timeNum = firestoreData.timeNum;
+                            if (this.timeNum == 0) {
+                                if (this.timer) {
+                                    clearInterval(this.timer);
+                                    this.timer = null;
+                                    this.timeLeft = 0;
+                                }
+                            }
                         } else {
                             console.log("No such document!");
                         }
                     });
+                },
+                startBanpick() {
+                    this.startTimer();
+                    this.dbUpdate();
                 },
                 resetBanpick() {
                     this.redBanLeaders = [];
@@ -272,6 +333,7 @@
                     this.bluePickLeaders = [];
                     this.stage = "firstBan";
                     this.turn = "redTeam";
+                    this.timeNum = 0;
                     this.dbUpdate();
                 },
             },
