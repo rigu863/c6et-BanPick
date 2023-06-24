@@ -29,6 +29,9 @@
                 <video webkit-playsinline="" playsinline="" muted="" autoplay="" loop="" src="./video/background.mp4"></video>
             </div>
             <div class="mainView">
+                <div :class="{'turnRed': turn === 'redTeam', 'redTeamName': true}">
+                    {{ redTeamName }}
+                </div>
                 <transition-group name="pickItem" tag="div" class="redView pickList">
                     <div v-for="(redPickLeader, index)  in redPickLeaders" :key="index">
                         {{ redPickLeader.name }}
@@ -40,8 +43,28 @@
                         <img :src="'./img/' + redBanLeader.id + '.webp'" alt="">
                     </div>
                 </transition-group>
-    
-                <div v-if="userType == turn" class="leaderSelectorBox">
+
+                <div class="stage">
+                    <template v-if="stage != 'finish' && timeNum == 0">
+                        準備中
+                    </template>
+                    <template v-else-if="stage == 'firstBan'">
+                        1st BAN フェーズ
+                    </template>
+                    <template v-else-if="stage == 'firstPick'">
+                        1st PICK フェーズ
+                    </template>
+                    <template v-else-if="stage == 'secondBan'">
+                        2nd BAN フェーズ
+                    </template>
+                    <template v-else-if="stage == 'secondPick'">
+                        2nd PICK フェーズ
+                    </template>
+                    <template v-else-if="stage == 'finish'">
+                        Ban Pick 終了
+                    </template>
+                </div>
+                <div v-if="userType == turn && timeNum != 0" class="leaderSelectorBox">
                     <div id="leaderSelector">
                         <div @click="pulldownShow" class="imageSelectorDisplay">
                             <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
@@ -63,7 +86,10 @@
                         {{ timeLeft }}
                     </span>
                 </div>
-    
+
+                <div :class="{'turnBlue': turn === 'blueTeam', 'blueTeamName': true}">
+                    {{ blueTeamName }}
+                </div>
                 <transition-group name="pickItem" tag="div"  class="blueView pickList">
                     <div v-for="(bluePickLeader, index) in bluePickLeaders" :key="index">
                         {{ bluePickLeader.name }}
@@ -124,6 +150,8 @@
                     timeLimit: 60,
                     timeLeft: 0,
                     timeNum: 0,
+                    redTeamName: "チーム1",
+                    blueTeamName: "チーム2",
                 }
             },
             methods: {
@@ -373,11 +401,44 @@
         }
         .mainView {
             height: 100vh;
+            min-height: 900px;
             display: grid;
             grid-template-columns: 700px 1fr 700px;
-            grid-template-rows: 630px 1fr;
+            grid-template-rows: 100px 630px 1fr;
             color: #fff;
             overflow: hidden;
+        }
+        .redTeamName,
+        .blueTeamName {
+            grid-row: 1 / 1;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 0.2em;
+            color: #fff;
+            box-shadow: #04192a 0 2px 2px 1px;
+        }
+        .redTeamName {
+            grid-column: 1 / 1;
+            background-color: #eb2f48;
+        }
+        .blueTeamName {
+            grid-column: 3 / 3;
+            background-color: #17a7ea;
+        }
+        .stage {
+            background: #fff;
+            color: #000;
+            font-size: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin: 0 20px 20px 20px;
+            box-shadow: #04192a 0 2px 2px 1px;
         }
         .redView {
             grid-column: 1 / 1;
@@ -386,7 +447,7 @@
             grid-column: 3 / 3;
         }
         .pickList {
-            grid-row: 1 / 1;
+            grid-row: 2 / 2;
             display: grid;
             grid-template-rows: 1fr 1fr 1fr 1fr;
             gap: 10px;
@@ -447,7 +508,7 @@
             order: -1;
         }
         .banList {
-            grid-row: 2 / 2;
+            grid-row: 3 / 3;
             display: flex;
             align-content: flex-start;
             flex-wrap: wrap;
@@ -501,6 +562,7 @@
         }
 
         .leaderSelectorBox {
+            grid-row: 2 / 2;
             text-align: center;
             padding: 0 10px;
         }
@@ -572,7 +634,7 @@
         }
 
         .timerBox {
-            grid-row: 2 / 2;
+            grid-row: 3 / 3;
             display: flex;
             justify-content: center;
             align-items: center;
