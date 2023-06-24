@@ -25,6 +25,9 @@
     </head>
     <body>
         <div id="app">
+            <div class="background">
+                <video webkit-playsinline="" playsinline="" muted="" autoplay="" loop="" src="./video/background.mp4"></video>
+            </div>
             <div class="mainView">
                 <transition-group name="pickItem" tag="div" class="redView pickList">
                     <div v-for="(redPickLeader, index)  in redPickLeaders" :key="index">
@@ -55,7 +58,11 @@
                         </button>
                     </div>
                 </div>
-                {{ timeLeft }}
+                <div class="timerBox">
+                    <span class="timer">
+                        {{ timeLeft }}
+                    </span>
+                </div>
     
                 <transition-group name="pickItem" tag="div"  class="blueView pickList">
                     <div v-for="(bluePickLeader, index) in bluePickLeaders" :key="index">
@@ -347,12 +354,28 @@
     </script>
 
     <style>
+        .background {
+            position: fixed;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to bottom, #123657, #103352);
+        }
+        .background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-fit: cover;
+            filter: blur(10px);
+            opacity: 0.5;
+        }
         .mainView {
             height: 100vh;
             display: grid;
             grid-template-columns: 700px 1fr 700px;
             grid-template-rows: 630px 1fr;
-            background-image: linear-gradient(to bottom, #123657, #103352);
             color: #fff;
             overflow: hidden;
         }
@@ -546,6 +569,27 @@
         .imageSelectorOption.target {
             background-color: #3ea8ff;
             color: #fff;
+        }
+
+        .timerBox {
+            grid-row: 2 / 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .timerBox .timer {
+            width: 150px;
+            height: 150px;
+            padding: 0 0 9px 0;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 70px;
+            border-radius: 100%;
+            color: #fff;
+            background-image: linear-gradient(180deg, #fdce83, #905e32);
+            border: 1px solid #04192a;
+            box-shadow: #04192a 0 2px 2px 1px;
         }
     </style>
 </html>
