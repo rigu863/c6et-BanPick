@@ -64,7 +64,7 @@
                         Ban Pick 終了
                     </template>
                 </div>
-                <div v-if="userType == turn && timeNum != 0" class="leaderSelectorBox">
+                <div v-if="userType == turn" class="leaderSelectorBox">
                     <div id="leaderSelector">
                         <div @click="pulldownShow" class="imageSelectorDisplay">
                             <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
@@ -143,8 +143,8 @@
                     bluePickLeaders: [],
                     firstPickCount: 4,
                     secondPickCount: 4,
-                    stage: "firstBan",
-                    turn: "redTeam",
+                    stage: "",
+                    turn: "",
                     userType: "",
                     timer: null,
                     timeLimit: 60,
@@ -367,6 +367,8 @@
                     });
                 },
                 startBanpick() {
+                    this.stage = "firstBan";
+                    this.turn = "redTeam";
                     this.startTimer();
                     this.dbUpdate();
                 },
@@ -375,8 +377,8 @@
                     this.blueBanLeaders = [];
                     this.redPickLeaders = [];
                     this.bluePickLeaders = [];
-                    this.stage = "firstBan";
-                    this.turn = "redTeam";
+                    this.stage = "";
+                    this.turn = "";
                     this.timeNum = 0;
                     this.dbUpdate();
                 },
@@ -443,6 +445,7 @@
             letter-spacing: 0.2em;
             color: #fff;
             box-shadow: #04192a 0 2px 2px 1px;
+            position: relative;
         }
         .redTeamName {
             grid-column: 1 / 1;
@@ -451,6 +454,21 @@
         .blueTeamName {
             grid-column: 3 / 3;
             background-color: #17a7ea;
+        }
+        .redTeamName.turnRed::before,
+        .blueTeamName.turnBlue::before {
+            content: "選択中";
+            font-size: 13px;
+            font-weight: normal;
+            display: inline-block;
+            position: absolute;
+            bottom: 10px;
+        }
+        .redTeamName.turnRed::before {
+            right: 15px;
+        }
+        .blueTeamName.turnBlue::before {
+            left: 15px;
         }
         .stage {
             background: #fff;
