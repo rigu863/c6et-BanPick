@@ -25,91 +25,97 @@
     </head>
     <body>
         <div id="app">
-            <div class="background">
-                <video webkit-playsinline="" playsinline="" muted="" autoplay="" loop="" src="./video/background.mp4"></video>
-            </div>
-            <div class="mainView">
-                <div :class="{'turnRed': turn === 'redTeam', 'redTeamName': true}">
-                    {{ redTeamName }}
+            <div v-if="userType !='admin'">
+                <div class="background">
+                    <video webkit-playsinline="" playsinline="" muted="" autoplay="" loop="" src="./video/background.mp4"></video>
                 </div>
-                <transition-group name="pickItem" tag="div" class="redView pickList">
-                    <div v-for="(redPickLeader, index)  in redPickLeaders" :key="index">
-                        {{ redPickLeader.name }}
-                        <img :src="'./img/' + redPickLeader.id + '.webp'" alt="">
+                <div class="mainView">
+                    <div :class="{'turnRed': turn === 'redTeam', 'redTeamName': true}">
+                        {{ redTeamName }}
                     </div>
-                </transition-group>
-                <transition-group name="banItem" tag="div" class="redView banList">
-                    <div v-for="(redBanLeader, index) in redBanLeaders" :key="index">
-                        <img :src="'./img/' + redBanLeader.id + '.webp'" alt="">
-                    </div>
-                </transition-group>
-
-                <div class="stage">
-                    <template v-if="stage != 'finish' && timeNum == 0">
-                        準備中
-                    </template>
-                    <template v-else-if="stage == 'firstBan'">
-                        1st BAN フェーズ
-                    </template>
-                    <template v-else-if="stage == 'firstPick'">
-                        1st PICK フェーズ
-                    </template>
-                    <template v-else-if="stage == 'secondBan'">
-                        2nd BAN フェーズ
-                    </template>
-                    <template v-else-if="stage == 'secondPick'">
-                        2nd PICK フェーズ
-                    </template>
-                    <template v-else-if="stage == 'finish'">
-                        Ban Pick 終了
-                    </template>
-                </div>
-                <div v-if="userType == turn" class="leaderSelectorBox">
-                    <div id="leaderSelector">
-                        <div @click="pulldownShow" class="imageSelectorDisplay">
-                            <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
-                            {{ selectLeader.name }}
+                    <transition-group name="pickItem" tag="div" class="redView pickList">
+                        <div v-for="(redPickLeader, index)  in redPickLeaders" :key="index">
+                            {{ redPickLeader.name }}
+                            <img :src="'./img/' + redPickLeader.id + '.webp'" alt="">
                         </div>
-                        <div class="imageSelectorPulldown">
-                            <div @click="clickSelectLeader" v-for="leader in selectableLeaders" :class="{'target': leader.id === selectLeader.id, 'imageSelectorOption': true}" :data-value="leader.id">
-                                <img :src="'./img/' + leader.id + '.webp'" alt="">
-                                {{ leader.name }}
+                    </transition-group>
+                    <transition-group name="banItem" tag="div" class="redView banList">
+                        <div v-for="(redBanLeader, index) in redBanLeaders" :key="index">
+                            <img :src="'./img/' + redBanLeader.id + '.webp'" alt="">
+                        </div>
+                    </transition-group>
+    
+                    <div class="stage">
+                        <template v-if="stage != 'finish' && timeNum == 0">
+                            準備中
+                        </template>
+                        <template v-else-if="stage == 'firstBan'">
+                            1st BAN フェーズ
+                        </template>
+                        <template v-else-if="stage == 'firstPick'">
+                            1st PICK フェーズ
+                        </template>
+                        <template v-else-if="stage == 'secondBan'">
+                            2nd BAN フェーズ
+                        </template>
+                        <template v-else-if="stage == 'secondPick'">
+                            2nd PICK フェーズ
+                        </template>
+                        <template v-else-if="stage == 'finish'">
+                            Ban Pick 終了
+                        </template>
+                    </div>
+                    <div v-if="userType == turn" class="leaderSelectorBox">
+                        <div id="leaderSelector">
+                            <div @click="pulldownShow" class="imageSelectorDisplay">
+                                <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
+                                {{ selectLeader.name }}
                             </div>
+                            <div class="imageSelectorPulldown">
+                                <div @click="clickSelectLeader" v-for="leader in selectableLeaders" :class="{'target': leader.id === selectLeader.id, 'imageSelectorOption': true}" :data-value="leader.id">
+                                    <img :src="'./img/' + leader.id + '.webp'" alt="">
+                                    {{ leader.name }}
+                                </div>
+                            </div>
+                            <button v-if="selectLeader.id != ''" @click="submitButton">
+                                決定
+                            </button>
                         </div>
-                        <button v-if="selectLeader.id != ''" @click="submitButton">
-                            決定
-                        </button>
                     </div>
-                </div>
-                <div class="timerBox">
-                    <span class="timer">
-                        {{ timeLeft }}
-                    </span>
-                </div>
-
-                <div :class="{'turnBlue': turn === 'blueTeam', 'blueTeamName': true}">
-                    {{ blueTeamName }}
-                </div>
-                <transition-group name="pickItem" tag="div"  class="blueView pickList">
-                    <div v-for="(bluePickLeader, index) in bluePickLeaders" :key="index">
-                        {{ bluePickLeader.name }}
-                        <img :src="'./img/' + bluePickLeader.id + '.webp'" alt="">
+                    <div class="timerBox">
+                        <span class="timer">
+                            {{ timeLeft }}
+                        </span>
                     </div>
-                </transition-group>
-                <transition-group name="banItem" tag="div" class="blueView banList">
-                    <div v-for="(blueBanLeader, index) in blueBanLeaders" :key="index">
-                        <img :src="'./img/' + blueBanLeader.id + '.webp'" alt="">
+    
+                    <div :class="{'turnBlue': turn === 'blueTeam', 'blueTeamName': true}">
+                        {{ blueTeamName }}
                     </div>
-                </transition-group>
+                    <transition-group name="pickItem" tag="div"  class="blueView pickList">
+                        <div v-for="(bluePickLeader, index) in bluePickLeaders" :key="index">
+                            {{ bluePickLeader.name }}
+                            <img :src="'./img/' + bluePickLeader.id + '.webp'" alt="">
+                        </div>
+                    </transition-group>
+                    <transition-group name="banItem" tag="div" class="blueView banList">
+                        <div v-for="(blueBanLeader, index) in blueBanLeaders" :key="index">
+                            <img :src="'./img/' + blueBanLeader.id + '.webp'" alt="">
+                        </div>
+                    </transition-group>
+                </div>
             </div>
 
-            <div v-if="userType =='admin'">
-                <button @click="resetBanpick">
-                    Ban Pick リセット
-                </button>
-                <button @click="startBanpick">
-                    Ban Pick スタート
-                </button>
+            <div v-else-if="userType == 'admin'">
+                <div>
+                    <button @click="resetBanpick" :disabled="stage == ''">
+                        Ban Pick リセット
+                    </button>
+                </div>
+                <div>
+                    <button @click="startBanpick" :disabled="stage != ''">
+                        Ban Pick スタート
+                    </button>
+                </div>
             </div>
         </div>
     </body>
