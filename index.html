@@ -136,6 +136,14 @@
                             <td>{{ timeLeft }}</td>
                         </tr>
                         <tr>
+                            <th>ファーストBAN数（両チーム合計）</th>
+                            <td>{{ firstBanCount }}</td>
+                        </tr>
+                        <tr>
+                            <th>セカンドBAN数（両チーム合計）</th>
+                            <td>{{ secondBanCount }}</td>
+                        </tr>
+                        <tr>
                             <th>レッドチームBAN</th>
                             <td v-for="redBanLeader in redBanLeaders">
                                 {{ redBanLeader.name }}
@@ -216,23 +224,23 @@
                                     タイムリミット
                                 </th>
                                 <td>
-                                    <input type="number" v-model="timeLimit" placeholder="タイムリミット">
+                                    <input type="number" v-model="timeLimit" min="10" placeholder="タイムリミット">
                                 </td>
                             </tr>
                             <tr>
                                 <th>
-                                    ファーストBAN数
+                                    ファーストBAN数（両チーム合計）
                                 </th>
                                 <td>
-                                    <input type="number" v-model="firstBanCount" placeholder="ファーストBAN数">
+                                    <input type="number" v-model="firstBanCount" min="2" max="12" step="2" placeholder="ファーストBAN数（両チーム合計）">
                                 </td>
                             </tr>
                             <tr>
                                 <th>
-                                    セカンドBAN数
+                                    セカンドBAN数（両チーム合計）
                                 </th>
                                 <td>
-                                    <input type="number" v-model="secondBanCount" placeholder="セカンドBAN数">
+                                    <input type="number" v-model="secondBanCount" min="2" max="12" step="2" placeholder="セカンドBAN数（両チーム合計）">
                                 </td>
                             </tr>
                         </tbody>
@@ -622,7 +630,7 @@
             min-height: 900px;
             display: grid;
             grid-template-columns: 700px 1fr 700px;
-            grid-template-rows: 100px 630px 1fr;
+            grid-template-rows: 100px 630px 1fr 255px;
             color: #fff;
             overflow: hidden;
         }
@@ -742,7 +750,7 @@
             order: -1;
         }
         .banList {
-            grid-row: 3 / 3;
+            grid-row: 4 / 4;
             display: flex;
             align-content: flex-start;
             flex-wrap: wrap;
@@ -868,10 +876,11 @@
         }
 
         .timerBox {
-            grid-row: 3 / 3;
+            grid-row: 4 / 4;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding-top: 20px;
         }
         .timerBox .timer {
             width: 150px;
