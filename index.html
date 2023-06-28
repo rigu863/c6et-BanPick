@@ -229,26 +229,10 @@
                             </tr>
                             <tr>
                                 <th>
-                                    ファーストPICK数
-                                </th>
-                                <td>
-                                    <input type="number" v-model="firstPickCount" placeholder="ファーストPICK数">
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
                                     セカンドBAN数
                                 </th>
                                 <td>
                                     <input type="number" v-model="secondBanCount" placeholder="セカンドBAN数">
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    セカンドPICK数
-                                </th>
-                                <td>
-                                    <input type="number" v-model="secondPickCount" placeholder="セカンドPICK数">
                                 </td>
                             </tr>
                         </tbody>
@@ -561,13 +545,18 @@
                 },
                 createRoom() {
                     db.collection("BanPick").add({
-                        redTeamName: this.redTeamName,
-                        blueTeamName: this.blueTeamName,
-                        timeLimit: this.timeLimit,
+                        redBanLeaders: this.redBanLeaders,
+                        blueBanLeaders: this.blueBanLeaders,
+                        redPickLeaders: this.redPickLeaders,
+                        bluePickLeaders: this.bluePickLeaders,
+                        stage: this.stage,
+                        turn: this.turn,
+                        timeNum: this.timeNum,
                         firstBanCount: this.firstBanCount,
                         secondBanCount: this.secondBanCount,
-                        firstPickCount: this.firstPickCount,
-                        secondPickCount: this.secondPickCount,
+                        timeLimit: this.timeLimit,
+                        redTeamName: this.redTeamName,
+                        blueTeamName: this.blueTeamName,
                     }).then(docRef => {
                         this.roomId = docRef.id;
                         const adminUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?userType=admin&roomId=' + this.roomId;
