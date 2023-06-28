@@ -25,7 +25,10 @@
     </head>
     <body>
         <div id="app">
-            <div v-if="userType !='admin'">
+            <div v-if="error">
+                {{ error }}
+            </div>
+            <div v-else-if="userType !='admin' && roomId != null">
                 <div class="background">
                     <video webkit-playsinline="" playsinline="" muted="" autoplay="" loop="" src="./video/background.mp4"></video>
                 </div>
@@ -105,7 +108,77 @@
                 </div>
             </div>
 
-            <div v-else-if="userType == 'admin'">
+            <div v-else-if="userType == 'admin' && roomId != null">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>レッドチーム名</th>
+                            <td>{{ redTeamName }}</td>
+                        </tr>
+                        <tr>
+                            <th>ブルーチーム名</th>
+                            <td>{{ blueTeamName }}</td>
+                        </tr>
+                        <tr>
+                            <th>フェーズ</th>
+                            <td>{{ stage }}</td>
+                        </tr>
+                        <tr>
+                            <th>ターン</th>
+                            <td>{{ turn }}</td>
+                        </tr>
+                        <tr>
+                            <th>タイムリミット</th>
+                            <td>{{ timeLimit }}</td>
+                        </tr>
+                        <tr>
+                            <th>タイマー</th>
+                            <td>{{ timeLeft }}</td>
+                        </tr>
+                        <tr>
+                            <th>レッドチームBAN</th>
+                            <td v-for="redBanLeader in redBanLeaders">
+                                {{ redBanLeader.name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>レッドチームPICK</th>
+                            <td v-for="redPickLeader in redPickLeaders">
+                                {{ redPickLeader.name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ブルーチームBAN</th>
+                            <td v-for="blueBanLeader in blueBanLeaders">
+                                {{ blueBanLeader.name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ブルーチームPICK</th>
+                            <td v-for="bluePickLeader in bluePickLeaders">
+                                {{ bluePickLeader.name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>レッドチームURLコピー用</th>
+                            <td>
+                                <input type="text" v-model="redTeamUrl" placeholder="レッドチームURL" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ブルーチームURLコピー用</th>
+                            <td>
+                                <input type="text" v-model="blueTeamUrl" placeholder="ブルーチームURL" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>観戦用URLコピー用</th>
+                            <td>
+                                <input type="text" v-model="viewUrl" placeholder="観戦用URL" readonly>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <div>
                     <button @click="resetBanpick" :disabled="stage == ''">
                         Ban Pick リセット
@@ -114,6 +187,74 @@
                 <div>
                     <button @click="startBanpick" :disabled="stage != ''">
                         Ban Pick スタート
+                    </button>
+                </div>
+            </div>
+
+            <div v-else-if="userType == 'admin' && roomId == null">
+                <div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>
+                                    レッドチーム名
+                                </th>
+                                <td>
+                                    <input type="text" v-model="redTeamName" placeholder="レッドチーム名">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    ブルーチーム名
+                                </th>
+                                <td>
+                                    <input type="text" v-model="blueTeamName" placeholder="ブルーチーム名">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    タイムリミット
+                                </th>
+                                <td>
+                                    <input type="number" v-model="timeLimit" placeholder="タイムリミット">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    ファーストBAN数
+                                </th>
+                                <td>
+                                    <input type="number" v-model="firstBanCount" placeholder="ファーストBAN数">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    ファーストPICK数
+                                </th>
+                                <td>
+                                    <input type="number" v-model="firstPickCount" placeholder="ファーストPICK数">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    セカンドBAN数
+                                </th>
+                                <td>
+                                    <input type="number" v-model="secondBanCount" placeholder="セカンドBAN数">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    セカンドPICK数
+                                </th>
+                                <td>
+                                    <input type="number" v-model="secondPickCount" placeholder="セカンドPICK数">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button @click="createRoom">
+                        部屋を作成
                     </button>
                 </div>
             </div>
@@ -158,6 +299,11 @@
                     timeNum: 0,
                     redTeamName: "チーム1",
                     blueTeamName: "チーム2",
+                    roomId: null,
+                    error: null,
+                    redTeamUrl: "",
+                    blueTeamUrl: "",
+                    viewUrl: "",
                 }
             },
             methods: {
@@ -335,7 +481,9 @@
                     }
                 },
                 dbUpdate() {
-                    db.collection("BanPick").doc("Data").set({
+                    if (!this.roomId) return;
+
+                    db.collection("BanPick").doc(this.roomId).set({
                         redBanLeaders: this.redBanLeaders,
                         blueBanLeaders: this.blueBanLeaders,
                         redPickLeaders: this.redPickLeaders,
@@ -343,10 +491,17 @@
                         stage: this.stage,
                         turn: this.turn,
                         timeNum: this.timeNum,
+                        firstBanCount: this.firstBanCount,
+                        secondBanCount: this.secondBanCount,
+                        timeLimit: this.timeLimit,
+                        redTeamName: this.redTeamName,
+                        blueTeamName: this.blueTeamName,
                     });
                 },
                 dbSync() {
-                    db.collection("BanPick").doc("Data")
+                    if (!this.roomId) return;
+
+                    db.collection("BanPick").doc(this.roomId)
                     .onSnapshot((doc) => {
                         if (doc.exists) {
                             let firestoreData = doc.data();
@@ -356,6 +511,11 @@
                             this.bluePickLeaders = firestoreData.bluePickLeaders;
                             this.stage = firestoreData.stage;
                             this.turn = firestoreData.turn;
+                            this.firstBanCount = firestoreData.firstBanCount;
+                            this.secondBanCount = firestoreData.secondBanCount;
+                            this.timeLimit = firestoreData.timeLimit;
+                            this.redTeamName = firestoreData.redTeamName;
+                            this.blueTeamName = firestoreData.blueTeamName;
                             if (this.timeNum < firestoreData.timeNum) {
                                 this.startTimer();
                             }
@@ -367,7 +527,9 @@
                                     this.timeLeft = 0;
                                 }
                             }
+                            this.error = null;
                         } else {
+                            this.error = '部屋は存在しません';
                             console.log("No such document!");
                         }
                     });
@@ -397,6 +559,42 @@
                     let selectedLeaders = [...this.redBanLeaders, ...this.blueBanLeaders, ...this.redPickLeaders, ...this.bluePickLeaders];
                     return selectedLeaders.some(selectedLeader => selectedLeader.id === leader.id);
                 },
+                createRoom() {
+                    db.collection("BanPick").add({
+                        redTeamName: this.redTeamName,
+                        blueTeamName: this.blueTeamName,
+                        timeLimit: this.timeLimit,
+                        firstBanCount: this.firstBanCount,
+                        secondBanCount: this.secondBanCount,
+                        firstPickCount: this.firstPickCount,
+                        secondPickCount: this.secondPickCount,
+                    }).then(docRef => {
+                        this.roomId = docRef.id;
+                        const adminUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?userType=admin&roomId=' + this.roomId;
+                        const redTeamUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?userType=redTeam&roomId=' + this.roomId;
+                        const blueTeamUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?userType=blueTeam&roomId=' + this.roomId;
+                        const viewUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?roomId=' + this.roomId;
+
+                        window.history.pushState({path:adminUrl},'',adminUrl);
+                        this.redTeamUrl = redTeamUrl;
+                        this.blueTeamUrl = blueTeamUrl;
+                        this.viewUrl = viewUrl;
+                    });
+                },
+                loadSettings(roomId) {
+                    if (!roomId) return;
+
+                    this.roomId = roomId;
+                    const redTeamUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?userType=redTeam&roomId=' + this.roomId;
+                    const blueTeamUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?userType=blueTeam&roomId=' + this.roomId;
+                    const viewUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?roomId=' + this.roomId;
+
+                    this.redTeamUrl = redTeamUrl;
+                    this.blueTeamUrl = blueTeamUrl;
+                    this.viewUrl = viewUrl;
+
+                    this.dbSync();
+                },
             },
             computed: {
                 selectableLeaders() {
@@ -407,7 +605,7 @@
                 this.getLeaders();
                 const urlParams = new URLSearchParams(window.location.search);
                 this.userType = urlParams.get("userType");
-                this.dbSync();
+                this.loadSettings(urlParams.get("roomId"));
             },
         }).mount("#app")
     </script>
