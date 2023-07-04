@@ -632,13 +632,13 @@
             min-height: 900px;
             display: grid;
             grid-template-columns: 700px 1fr 700px;
-            grid-template-rows: 100px 630px 1fr 255px;
+            grid-template-rows: 100px 100px 630px 1fr 255px;
             color: #fff;
             overflow: hidden;
         }
         .redTeamName,
         .blueTeamName {
-            grid-row: 1 / 1;
+            grid-row: 2 / 2;
             margin-bottom: 20px;
             display: flex;
             justify-content: center;
@@ -674,6 +674,7 @@
             left: 15px;
         }
         .stage {
+            grid-row: 2 / 2;
             background: #fff;
             color: #000;
             font-size: 25px;
@@ -691,7 +692,7 @@
             grid-column: 3 / 3;
         }
         .pickList {
-            grid-row: 2 / 2;
+            grid-row: 3 / 3;
             display: grid;
             grid-template-rows: 1fr 1fr 1fr 1fr;
             gap: 10px;
@@ -752,7 +753,7 @@
             order: -1;
         }
         .banList {
-            grid-row: 4 / 4;
+            grid-row: 5 / 5;
             display: flex;
             align-content: flex-start;
             flex-wrap: wrap;
@@ -806,7 +807,7 @@
         }
 
         .leaderSelectorBox {
-            grid-row: 2 / 2;
+            grid-row: 3 / 3;
             text-align: center;
             padding: 0 10px;
         }
@@ -878,7 +879,7 @@
         }
 
         .timerBox {
-            grid-row: 4 / 4;
+            grid-row: 5 / 5;
             display: flex;
             justify-content: center;
             align-items: flex-start;
