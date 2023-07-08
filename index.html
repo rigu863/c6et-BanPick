@@ -68,7 +68,7 @@
                             Ban Pick 終了
                         </template>
                     </div>
-                    <div v-if="userType == turn" class="leaderSelectorBox">
+                    <div v-if="userType == turn && timeLeft > 0" class="leaderSelectorBox">
                         <div id="leaderSelector">
                             <div @click="pulldownShow" class="imageSelectorDisplay">
                                 <img v-if="selectLeader.id" :src="'./img/' + selectLeader.id + '.webp'" alt="">
@@ -327,14 +327,14 @@
                     this.startTimer();
 
                     // 1st Ban
-                    if (this.stage == "firstBan" && this.turn == "redTeam" && this.userType == "redTeam") {
+                    if (this.stage == "firstBan" && this.turn == "redTeam" && (this.userType == "redTeam" || this.userType == "admin")) {
                         this.redBanLeaders.push(this.selectLeader);
                         this.turn = "blueTeam";
                         this.dbUpdate();
                         this.resetSelectLeader();
                         return;
 
-                    } else if (this.stage == "firstBan" && this.turn == "blueTeam" && this.userType == "blueTeam") {
+                    } else if (this.stage == "firstBan" && this.turn == "blueTeam" && (this.userType == "blueTeam" || this.userType == "admin")) {
                         this.blueBanLeaders.push(this.selectLeader);
                         this.turn = "redTeam";
 
@@ -351,7 +351,7 @@
                     }
 
                     // 1st Pick
-                    if (this.stage == "firstPick" && this.turn == "redTeam" && this.userType == "redTeam") {
+                    if (this.stage == "firstPick" && this.turn == "redTeam" && (this.userType == "redTeam" || this.userType == "admin")) {
                         this.redPickLeaders.push(this.selectLeader);
                         
                         let redPickCount = this.redPickLeaders.length;
@@ -365,7 +365,7 @@
                         this.resetSelectLeader();
                         return;
 
-                    } else if (this.stage == "firstPick" && this.turn == "blueTeam" && this.userType == "blueTeam") {
+                    } else if (this.stage == "firstPick" && this.turn == "blueTeam" && (this.userType == "blueTeam" || this.userType == "admin")) {
                         this.bluePickLeaders.push(this.selectLeader);
 
                         let bluePickCount = this.bluePickLeaders.length;
@@ -378,14 +378,14 @@
                     }
 
                     // 2nd Ban
-                    if (this.stage == "secondBan" && this.turn == "blueTeam" && this.userType == "blueTeam") {
+                    if (this.stage == "secondBan" && this.turn == "blueTeam" && (this.userType == "blueTeam" || this.userType == "admin")) {
                         this.blueBanLeaders.push(this.selectLeader);
                         this.turn = "redTeam";
                         this.dbUpdate();
                         this.resetSelectLeader();
                         return;
 
-                    } else if (this.stage == "secondBan" &&  this.turn == "redTeam" && this.userType == "redTeam") {
+                    } else if (this.stage == "secondBan" &&  this.turn == "redTeam" && (this.userType == "redTeam" || this.userType == "admin")) {
                         this.redBanLeaders.push(this.selectLeader);
                         this.turn = "blueTeam";
 
@@ -402,7 +402,7 @@
                     }
 
                     // 2nd Pick
-                    if (this.stage == "secondPick" && this.turn == "blueTeam" && this.userType == "blueTeam") {
+                    if (this.stage == "secondPick" && this.turn == "blueTeam" && (this.userType == "blueTeam" || this.userType == "admin")) {
                         this.bluePickLeaders.push(this.selectLeader);
 
                         let bluePickCount = this.bluePickLeaders.length;
@@ -422,7 +422,7 @@
                         this.resetSelectLeader();
                         return;
 
-                    } else if (this.stage == "secondPick" && this.turn == "redTeam" && this.userType == "redTeam") {
+                    } else if (this.stage == "secondPick" && this.turn == "redTeam" && (this.userType == "redTeam" || this.userType == "admin")) {
                         this.redPickLeaders.push(this.selectLeader);
 
                         let redPickCount = this.redPickLeaders.length;
@@ -453,9 +453,11 @@
                             this.timer = null;
                             this.timeLeft = 0;
 
-                            // リーダーのランダム選択
-                            this.selectRandomLeader();
-                            this.submitButton();
+                            if (this.userType == "admin") {
+                                // リーダーのランダム選択
+                                this.selectRandomLeader();
+                                this.submitButton();
+                            }
                             this.resetSelectLeader();
                         } else {
                             this.timeLeft--;
@@ -463,8 +465,8 @@
                     }, 1000);
                 },
                 selectRandomLeader() {
-                    const randomIndex = Math.floor(Math.random() * this.leaders.length);
-                    const selectedLeader = this.leaders[randomIndex];
+                    const randomIndex = Math.floor(Math.random() * this.selectableLeaders.length);
+                    const selectedLeader = this.selectableLeaders[randomIndex];
 
                     if (selectedLeader) {
                         this.selectLeader.id = selectedLeader.id;
