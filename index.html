@@ -109,98 +109,105 @@
             </div>
 
             <div v-else-if="userType == 'admin' && roomId != null">
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>レッドチーム名</th>
-                            <td>{{ redTeamName }}</td>
-                        </tr>
-                        <tr>
-                            <th>ブルーチーム名</th>
-                            <td>{{ blueTeamName }}</td>
-                        </tr>
-                        <tr>
-                            <th>フェーズ</th>
-                            <td>{{ stage }}</td>
-                        </tr>
-                        <tr>
-                            <th>ターン</th>
-                            <td>{{ turn }}</td>
-                        </tr>
-                        <tr>
-                            <th>タイムリミット</th>
-                            <td>{{ timeLimit }}</td>
-                        </tr>
-                        <tr>
-                            <th>タイマー</th>
-                            <td>{{ timeLeft }}</td>
-                        </tr>
-                        <tr>
-                            <th>ファーストBAN数（両チーム合計）</th>
-                            <td>{{ firstBanCount }}</td>
-                        </tr>
-                        <tr>
-                            <th>セカンドBAN数（両チーム合計）</th>
-                            <td>{{ secondBanCount }}</td>
-                        </tr>
-                        <tr>
-                            <th>レッドチームBAN</th>
-                            <td v-for="redBanLeader in redBanLeaders">
-                                {{ redBanLeader.name }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>レッドチームPICK</th>
-                            <td v-for="redPickLeader in redPickLeaders">
-                                {{ redPickLeader.name }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>ブルーチームBAN</th>
-                            <td v-for="blueBanLeader in blueBanLeaders">
-                                {{ blueBanLeader.name }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>ブルーチームPICK</th>
-                            <td v-for="bluePickLeader in bluePickLeaders">
-                                {{ bluePickLeader.name }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>レッドチームURLコピー用</th>
-                            <td>
-                                <input type="text" v-model="redTeamUrl" placeholder="レッドチームURL" readonly>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>ブルーチームURLコピー用</th>
-                            <td>
-                                <input type="text" v-model="blueTeamUrl" placeholder="ブルーチームURL" readonly>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>観戦用URLコピー用</th>
-                            <td>
-                                <input type="text" v-model="viewUrl" placeholder="観戦用URL" readonly>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div>
-                    <button @click="resetBanpick" :disabled="stage == ''">
-                        Ban Pick リセット
-                    </button>
-                </div>
-                <div>
-                    <button @click="startBanpick" :disabled="stage != ''">
-                        Ban Pick スタート
-                    </button>
+                <div class="admin">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>レッドチーム名</th>
+                                <td>{{ redTeamName }}</td>
+                            </tr>
+                            <tr>
+                                <th>ブルーチーム名</th>
+                                <td>{{ blueTeamName }}</td>
+                            </tr>
+                            <tr>
+                                <th>フェーズ</th>
+                                <td>{{ stage }}</td>
+                            </tr>
+                            <tr>
+                                <th>ターン</th>
+                                <td>{{ turn }}</td>
+                            </tr>
+                            <tr>
+                                <th>タイムリミット</th>
+                                <td>{{ timeLimit }}</td>
+                            </tr>
+                            <tr>
+                                <th>タイマー</th>
+                                <td>{{ timeLeft }}</td>
+                            </tr>
+                            <tr>
+                                <th>ファーストBAN数（両チーム合計）</th>
+                                <td>{{ firstBanCount }}</td>
+                            </tr>
+                            <tr>
+                                <th>セカンドBAN数（両チーム合計）</th>
+                                <td>{{ secondBanCount }}</td>
+                            </tr>
+                            <tr>
+                                <th>レッドチームBAN</th>
+                                <td v-for="redBanLeader in redBanLeaders">
+                                    {{ redBanLeader.name }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>レッドチームPICK</th>
+                                <td v-for="redPickLeader in redPickLeaders">
+                                    {{ redPickLeader.name }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>ブルーチームBAN</th>
+                                <td v-for="blueBanLeader in blueBanLeaders">
+                                    {{ blueBanLeader.name }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>ブルーチームPICK</th>
+                                <td v-for="bluePickLeader in bluePickLeaders">
+                                    {{ bluePickLeader.name }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>レッドチームURLコピー用</th>
+                                <td colspan="5">
+                                    <input type="text" v-model="redTeamUrl" placeholder="レッドチームURL" readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>ブルーチームURLコピー用</th>
+                                <td colspan="5">
+                                    <input type="text" v-model="blueTeamUrl" placeholder="ブルーチームURL" readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>観戦用URLコピー用</th>
+                                <td colspan="5">
+                                    <input type="text" v-model="viewUrl" placeholder="観戦用URL" readonly>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <div class="adminButtonWrap">
+                        <button @click="resetBanpick" :disabled="stage == ''">
+                            Ban Pick リセット
+                        </button>
+                        <button @click="startBanpick" :disabled="stage != ''">
+                            Ban Pick スタート
+                        </button>
+                    </div>
+                    <br>
+                    <div>
+                        <a href="https://www.buymeacoffee.com/rigu863" target="_blank">
+                            投げ銭ページ
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <div v-else-if="userType == 'admin' && roomId == null">
-                <div>
+                <div class="admin">
                     <table>
                         <tbody>
                             <tr>
@@ -245,9 +252,18 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button @click="createRoom">
-                        部屋を作成
-                    </button>
+                    <br>
+                    <div class="adminButtonWrap">
+                        <button @click="createRoom">
+                            部屋を作成
+                        </button>
+                    </div>
+                    <br>
+                    <div>
+                        <a href="https://www.buymeacoffee.com/rigu863" target="_blank">
+                            投げ銭ページ
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -906,6 +922,33 @@
             border: 1px solid #04192a;
             box-shadow: #04192a 0 2px 2px 1px;
             text-shadow: 1px 1px 4px #333;
+        }
+
+        .admin {
+            padding: 10px;
+        }
+        .admin table tr:nth-child(2n+1) {
+            background-color: #e7e7e7;
+        }
+        .admin table tr:nth-child(2n) {
+            background-color: #f7f7f7;
+        }
+        .admin table th,
+        .admin table td {
+            padding: 10px 5px;
+        }
+        .admin table th {
+            min-width: 270px;
+        }
+        .admin table td input {
+            min-width: 700px;
+        }
+        .adminButtonWrap {
+            display: flex;
+            gap: 15px;
+        }
+        .adminButtonWrap button {
+            padding: 0.5rem 2rem;
         }
     </style>
 </html>
