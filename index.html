@@ -701,7 +701,6 @@
         }
         .pickList div {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             gap: 20px;
             font-size: 25px;
@@ -711,6 +710,12 @@
             transition: 0.7s all;
             position: relative;
             left: 0;
+        }
+        .pickList.redView div {
+            justify-content: right;
+        }
+        .pickList.blueView div {
+            justify-content: left;
         }
         .pickList .pickItem-enter-active {
             visibility: hidden;
